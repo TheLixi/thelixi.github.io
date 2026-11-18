@@ -33,8 +33,7 @@ html = html.replace(/"(image|logo)": "[^"]*netlen-logo-512\.png"/g, `"$1": "${ba
            .replace(/"(screenshot|thumbnailUrl)": "[^"]*tanitim-poster\.png"/g, `"$1": "${base}media/tanitim-poster.png"`)
            .replace(/"contentUrl": "[^"]*netlen-tanitim\.mp4"/, `"contentUrl": "${base}media/netlen-tanitim.mp4"`)
            .replace(/"@type": "WebSite", "name": "Netlen", "inLanguage": "tr"( , "url": "[^"]*")?/, `"@type": "WebSite", "name": "Netlen", "inLanguage": "tr", "url": "${base}"`)
-           .replace(/("@type": "SoftwareApplication",\n\s*"name": "Netlen",)(\n\s*"url": "[^"]*",)?/, `$1\n      "url": "${base}",`)
-           .replace(/("operatingSystem": "Web, Chrome",)(\n\s*"installUrl": "[^"]*",)?/, `$1\n      "installUrl": "${base}app/",`);
+           .replace(/("@type": "SoftwareApplication",\n\s*"name": "Netlen",)(\n\s*"url": "[^"]*",)?/, `$1\n      "url": "${base}",`);
 // Google Search Console ownership tag
 html = html.replace(/<meta name="google-site-verification" content="[^"]*">\n/, '');
 if (google) html = html.replace('<meta name="site-kind"', `<meta name="google-site-verification" content="${google.replace(/"/g, '')}">\n<meta name="site-kind"`);
