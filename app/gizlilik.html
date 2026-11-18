@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Netlen — Gizlilik Politikası</title>
+<style>
+  body{margin:0;background:#0b0b0d;color:#e4e4e7;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:48px 22px 80px}
+  h1{font-size:32px;margin:0 0 4px;background:linear-gradient(180deg,#fff,#b4b5bc);-webkit-background-clip:text;color:transparent}
+  h2{font-size:20px;margin:36px 0 8px;color:#fafafa}
+  .muted{color:#a1a1aa;font-size:14px}
+  a{color:#d4d4d8}
+  li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Netlen Gizlilik Politikası</h1>
+<p class="muted">Lixi Development · Son güncelleme: 18 Kasım 2026</p>
+
+<p>Bu politika, Netlen uygulamasının (Chrome uzantısı, web, Android, iOS ve masaüstü sürümleri) hangi verileri nasıl kullandığını açıklar. Netlen'i Lixi Development geliştirir.</p>
+
+<h2>1. Cihazında kalan veriler</h2>
+<p>Çalışma planın, konu ilerlemen, odak süreleri, soru kayıtların, hata defterin, deneme sonuçların, hedeflerin ve ayarların varsayılan olarak yalnızca cihazında (tarayıcının yerel depolamasında) saklanır. Bu veriler, aşağıdaki özellikleri kendin açmadığın sürece bize gönderilmez.</p>
+
+<h2>2. İnternete gönderilen veriler (yalnızca ilgili özelliği kullanırsan)</h2>
+<ul>
+  <li><b>Sınıf sıralaması ve Odak Odası:</b> Bir sınıfa katılırsan takma adın, çalışma süren, çözdüğün soru sayısı, serin, deneme netlerin, rozet sayın ve odak sayacı çalışırken dersin ile kalan süren sınıf arkadaşlarınla paylaşılır.</li>
+  <li><b>Sınıfa Sor:</b> Sınıfına gönderdiğin soru fotoğrafları, notlar ve çözüm çizimleri o sınıfın üyelerine görünür.</li>
+  <li><b>Hesap ve bulut yedeği:</b> E-posta ve şifreyle hesap oluşturursan e-posta adresin kimlik doğrulama için, uygulama verilerinin yedeği de hesabına bağlı olarak saklanır.</li>
+  <li><b>Öğretmen modu:</b> Öğretmen hesabıyla sınıf kuran öğretmen, sınıftaki öğrencilerin çalışma özetlerini ve ödev durumlarını görür.</li>
+  <li><b>Netle Beyin (yapay zekâ):</b> Beyin'e yazdığın mesajlar, gönderdiğin fotoğraflar ve yanıt için gereken çalışma özetin, yanıt üretilmesi için Google'ın Gemini modeline (Firebase AI Logic) gönderilir. Gemini o an yoğunsa aynı içerik, Cloudflare üzerindeki sunucumuz aracılığıyla NVIDIA'nın yapay zekâ servisine (build.nvidia.com) iletilir; bu sırada günlük kullanım sınırını uygulamak için yalnızca anonim kullanıcı kimliğin ve günlük mesaj sayın 36 saat saklanır. Sohbet geçmişi yalnızca cihazında saklanır.</li>
+</ul>
+<p>Bu veriler Google Firebase (Firebase Authentication, Cloud Firestore, Firebase AI Logic) üzerinde işlenir ve saklanır; Netle Beyin yedeği Cloudflare Workers ve NVIDIA üzerinden çalışır. Firebase'in gizlilik bilgileri: <a href="https://firebase.google.com/support/privacy">firebase.google.com/support/privacy</a>.</p>
+
+<h2>3. Kullanmadıklarımız</h2>
+<ul>
+  <li>Verilerini satmayız, kiralamayız ve reklam amacıyla kullanmayız.</li>
+  <li>Uygulamada reklam ve üçüncü taraf izleme aracı yoktur.</li>
+  <li>Tarama geçmişini, ziyaret ettiğin siteleri ya da diğer sekmelerin içeriğini okumayız. Chrome uzantısı hiçbir özel tarayıcı izni istemez.</li>
+  <li>Verileri yalnızca uygulamanın özelliklerini sağlamak için kullanırız.</li>
+</ul>
+
+<h2>4. Güvenlik</h2>
+<p>Bağlantılar HTTPS ile şifrelenir. Sunucudaki verilere erişim, her kullanıcının yalnızca kendi verisine ve üyesi olduğu sınıfın paylaşılan verisine ulaşabileceği güvenlik kurallarıyla sınırlandırılmıştır.</p>
+
+<h2>5. Verilerini silme</h2>
+<p>Cihazındaki verileri Ayarlar → Sıfırla ile silebilirsin. Sınıftan ayrılabilir ya da sınıfı kuran kişi seni çıkarabilir. Hesabının ve buluttaki tüm verilerinin silinmesini istersen aşağıdaki adrese yaz; talebini 30 gün içinde yerine getiririz.</p>
+
+<h2>6. Çocuklar</h2>
+<p>Netlen lise öğrencilerine yöneliktir. 18 yaşından küçük kullanıcıların, sınıf ve hesap özelliklerini veli veya öğretmen bilgisiyle kullanmasını öneririz. Takma ad olarak gerçek tam adını kullanmak zorunda değilsin.</p>
+
+<h2>7. Değişiklikler</h2>
+<p>Bu politikayı güncellersek bu sayfadaki tarih değişir.</p>
+
+<h2>8. İletişim</h2>
+<p>Lixi Development · <a href="mailto:lixi@lixideveloper.dev">lixi@lixideveloper.dev</a> · <a href="https://lixideveloper.dev">lixideveloper.dev</a></p>
+</main>
+</body>
+</html>

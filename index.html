@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="tr" data-type="software" data-radius="round" data-ground="sand" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Netlen: TYT ve AYT çalışma planlayıcısı, YKS'ye hazırlananlar için</title>
+<meta name="description" content="Netlen, YKS'ye hazırlanan öğrenciler için haftalık çalışma planı kurar; konu takibi, Pomodoro odak sayacı, hata defteri ve deneme net analizi tek uygulamada.">
+<meta name="keywords" content="YKS çalışma programı, TYT AYT planlayıcı, YKS planlama uygulaması, deneme net takibi, Pomodoro sayacı, hata defteri, konu takibi">
+<meta name="author" content="Lixi Development">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Netlen">
+<meta property="og:title" content="Netlen: YKS için haftalık çalışma planı ve deneme takibi">
+<meta property="og:description" content="Alanını ve günlük saatini seç; Netlen 4 adımda TYT ve AYT planını kurar, netlerini grafikte gösterir.">
+<meta property="og:image" content="https://thelixi.github.io/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="media/netlen-logo.png" type="image/png">
+<link rel="apple-touch-icon" href="media/netlen-logo-512.png">
+<meta name="theme-color" content="#eef0f3">
+<link rel="canonical" href="https://thelixi.github.io/">
+<meta property="og:url" content="https://thelixi.github.io/">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<style>
+:root {
+  --p-bg: #eef0f3; --p-surface: #e2e5ea; --p-ink: #0b0c0e; --p-muted: #5d6470;
+  --p-accent: #1f2de6; --p-accent-ink: #ffffff; --p-action: #1f2de6; --p-action-ink: #ffffff;
+  --p-inv-bg: #0b0c0e; --p-inv-surface: #17181a; --p-inv-ink: #eef0f3; --p-inv-muted: #8e8f92;
+  --p-inv-accent: #eef0f3; --p-inv-accent-ink: #0b0c0e; --p-inv-action: #eef0f3; --p-inv-action-ink: #0b0c0e;
+  --font-display: "Urbanist", system-ui, sans-serif;
+  --font-text: "Urbanist", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 500;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+}
+</style>
+<link rel="stylesheet" href="assets/ui/base.css">
+<link rel="stylesheet" href="assets/ui/window/fragment.css">
+<link rel="stylesheet" href="assets/ui/calendar/fragment.css">
+<link rel="stylesheet" href="assets/ui/checklist/fragment.css">
+<link rel="stylesheet" href="assets/ui/stat/fragment.css">
+<link rel="stylesheet" href="assets/ui/notify/fragment.css">
+<link rel="stylesheet" href="assets/ui/toggles/fragment.css">
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script src="assets/backgrounds/backgrounds.js"></script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
+<link rel="modulepreload" href="assets/moments/word-highlight/moment.js">
+<!-- page CSS: only what sits inside a visual, and one --p-h per card group -->
+<style>
+  /* the logo: the client's own app icon beside the name */
+  .nav__logo img, .footer-logo img { width: 28px; height: 28px; border-radius: 7px; flex: none; }
+
+  /* hero: Netlen's home screen on a phone, on the lit ground, cut by the frame's foot */
+  .hero--split .hero__media.lit { background: var(--ground-bg); }
+  .nl-phone { position: absolute; top: 48px; bottom: 48px; right: 50%; transform: translateX(50%); width: 340px; padding: 10px; border-radius: 46px;
+              background: #101114; box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 30px 60px -20px rgba(20,16,10,.45); }
+  .nl-screen { height: 100%; overflow: hidden; border-radius: 36px; background: #f5f6f9; color: #0b0c0e; padding: 22px 16px;
+               font: 400 13px/1.35 var(--font-text); display: grid; gap: 12px; align-content: start; }
+  .nl-top { display: flex; align-items: center; justify-content: space-between; }
+  .nl-top small { display: block; color: #5d6470; font-size: 12px; }
+  .nl-top b { font: 500 20px/1.15 var(--font-display); letter-spacing: -.02em; }
+  .nl-gear { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #dfe2e8; display: grid; place-items: center; color: #5d6470; }
+  .nl-count { border-radius: 20px; background: #0b0c0e; color: #fff; padding: 14px; display: grid; gap: 10px; }
+  .nl-chip { justify-self: start; font-size: 11px; padding: 3px 8px; border-radius: 99px; background: rgba(255,255,255,.12); color: #e6e8ee; }
+  .nl-big { display: flex; align-items: baseline; gap: 8px; }
+  .nl-big b { font: 500 44px/1 var(--font-display); letter-spacing: -.04em; }
+  .nl-big span { font-size: 13px; color: #e6e8ee; }
+  .nl-big span i { display: block; font-style: normal; color: #9fa4ae; font-size: 12px; }
+  .nl-bar { height: 6px; border-radius: 99px; background: rgba(255,255,255,.16); overflow: hidden; }
+  .nl-bar i { display: block; height: 100%; width: 25%; border-radius: inherit; background: #fff; }
+  .nl-meta { display: flex; justify-content: space-between; font-size: 11px; color: #9fa4ae; }
+  .nl-minis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .nl-minis span { border-radius: 12px; background: rgba(255,255,255,.08); padding: 8px; font-size: 11px; color: #9fa4ae; }
+  .nl-minis b { display: block; font: 500 14px/1.2 var(--font-text); color: #fff; }
+  .nl-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .nl-tile { border-radius: 16px; background: #fff; border: 1px solid #e3e6ec; padding: 12px; display: grid; gap: 2px; }
+  .nl-tile b { font: 500 18px/1.2 var(--font-display); }
+  .nl-tile span { font-size: 11px; color: #5d6470; }
+  .nl-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 500; font-size: 14px; }
+  .nl-head span { font-weight: 400; font-size: 12px; color: #5d6470; }
+  .nl-rows { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .nl-row { display: grid; grid-template-columns: 4px 1fr auto; gap: 10px; align-items: center; border-radius: 14px; background: #fff;
+            border: 1px solid #e3e6ec; padding: 10px 12px; }
+  .nl-row > i { align-self: stretch; border-radius: 4px; background: #d5d9e1; }
+  .nl-row.is-now > i { background: var(--p-accent); }
+  .nl-row.is-done { color: #5d6470; }
+  .nl-row b { display: block; font-weight: 500; font-size: 13px; }
+  .nl-row small { font-size: 12px; color: #5d6470; }
+  .nl-row em { font-style: normal; font-size: 12px; color: #5d6470; }
+  @media (max-width: 1023px) { .nl-phone { top: 24px; bottom: 24px; width: 320px; } }
+  @media (max-width: 639px) { .nl-phone { top: 16px; bottom: 16px; width: 290px; border-radius: 40px; } .nl-screen { border-radius: 31px; } }
+
+  /* app-frame (sections-library.md, app-frame) */
+  .app.ui { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); }
+  .app > .app__pane { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+  .app > .app__pane + .app__pane { border-left: 1px solid var(--u-line); }
+  .app > .app__pane > .ui-panel { width: 100%; border: 0; border-radius: 0; box-shadow: none; }
+  .app > .app__pane::after { content: ""; position: absolute; inset: auto 0 0 0; height: 64px; background: linear-gradient(transparent, var(--u-bg)); pointer-events: none; }
+  .app > .app__pane--open { display: flex; justify-content: center; padding: var(--s-6) var(--s-6) 0; background: var(--u-bg2, var(--u-bg)); }
+  .app > .app__pane--open > .ui-panel { max-width: 440px; border: 1px solid var(--u-border); border-radius: 14px; }
+  @media (min-width: 1024px) and (max-width: 1279px) { .app.ui { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
+  @media (max-width: 1023px) {
+    .app.ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+    .app > .app__pane--list { max-height: 252px; }
+    .app > .app__pane--list::after { display: none; }
+    .app .ui-win__side { display: none; }
+    .app .ui-win__body { grid-template-columns: minmax(0, 1fr); }
+    .app > .app__pane + .app__pane { border-left: 0; border-top: 1px solid var(--u-line); }
+  }
+  @media (max-width: 639px) {
+    .app.ui { grid-template-rows: minmax(0, 1fr); }
+    .app > .app__pane--list { display: none; }
+    .app > .app__pane + .app__pane { border-top: 0; }
+    .app > .app__pane--open { padding: var(--s-4) var(--s-4) 0; }
+  }
+
+  /* the feature cards: one panel height for the group */
+  #ozellikler .panel { --p-h: 300px; }
+  @media (max-width: 639px) { #ozellikler .panel { --p-h: 200px; } }
+
+  /* the focus timer: Netlen's Odak screen as live HTML */
+  .nl-timer { width: 100%; max-width: 360px; padding: 16px; display: grid; gap: 14px; justify-items: center; }
+  .nl-timer__tabs { display: flex; gap: 4px; padding: 3px; border-radius: 99px; background: var(--u-bg2, #f1f2f5); font-size: 12px; }
+  .nl-timer__tabs span { padding: 5px 10px; border-radius: 99px; color: var(--u-muted, #5d6470); }
+  .nl-timer__tabs .is-on { background: var(--u-bg, #fff); color: var(--u-ink, #0b0c0e); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .nl-ring { position: relative; width: 176px; height: 176px; display: grid; place-items: center; text-align: center; }
+  .nl-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .nl-ring circle { fill: none; stroke-width: 7; }
+  .nl-ring .bg { stroke: var(--u-line, #e6e8ec); }
+  .nl-ring .fg { stroke: var(--p-accent); stroke-linecap: round; stroke-dasharray: 515; stroke-dashoffset: 130; }
+  .nl-ring b { display: block; font: 500 38px/1 var(--font-display); letter-spacing: -.03em; color: var(--u-ink, #0b0c0e); }
+  .nl-ring small { font-size: 12px; color: var(--u-muted, #5d6470); }
+  .nl-timer__foot { width: 100%; display: flex; justify-content: space-between; font-size: 12px; color: var(--u-muted, #5d6470); border-top: 1px solid var(--u-line, #e6e8ec); padding-top: 10px; }
+  .nl-timer__foot b { color: var(--u-ink, #0b0c0e); font-weight: 500; }
+
+  /* the film: the client's 9:16 story film as a phone in the one effect frame */
+  #tanitim .frame { padding: 0; }
+  #tanitim .nl-film { position: relative; z-index: 1; height: calc(100% - 64px); max-height: 600px; aspect-ratio: 9 / 16; border-radius: 28px;
+                      border: 8px solid #101114; background: #000; box-shadow: 0 30px 60px -24px rgba(10,12,30,.5); }
+  #tanitim .nl-film > img, #tanitim .nl-film > video { border-radius: 20px; }
+  #tanitim .nl-film > .ly-play { left: 50%; bottom: 24px; transform: translateX(-50%); }
+  @media (max-width: 1023px) { #tanitim .frame { min-height: 520px; } #tanitim .nl-film { height: 470px; } }
+  /* a phone: two screens, the text on the first and the film filling what the second leaves */
+  @media (max-width: 639px) { #tanitim .frame { min-height: 600px; } #tanitim .nl-film { height: min(600px, calc(100% - 48px)); } }
+
+  /* the chart frame keeps the split ratio on the lit ground */
+  #analiz .frame { --ratio: 80%; }
+  #analiz .frame .ui { --fx-bg: #ffffff; --fx-surface: #f4f5f8; --fx-ink: #0b0c0e; --fx-muted: #5d6470; --fx-accent: var(--p-accent); --fx-accent-ink: #ffffff; }
+  @media (max-width: 639px) { #analiz .frame { --ratio: 100%; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Netlen",
+      "url": "https://thelixi.github.io/",
+      "alternateName": "Netlen YKS Çalışma Planlayıcı",
+      "description": "TYT ve AYT için çalışma planlayıcı: haftalık plan, konu takibi, Pomodoro odak sayacı, hata defteri, deneme net analizi ve sınıf sıralaması.",
+      "applicationCategory": "EducationalApplication",
+      "applicationSubCategory": "Çalışma planlayıcı",
+      "operatingSystem": "Web, Chrome",
+      "installUrl": "https://thelixi.github.io/app/",
+      "inLanguage": "tr",
+      "softwareVersion": "1.8.2",
+      "image": "https://thelixi.github.io/media/netlen-logo-512.png",
+      "screenshot": "https://thelixi.github.io/media/tanitim-poster.png",
+      "author": { "@type": "Organization", "name": "Lixi Development" },
+      "audience": { "@type": "EducationalAudience", "educationalRole": "student", "audienceType": "YKS'ye hazırlanan lise öğrencileri" },
+      "featureList": ["Haftalık çalışma planı", "TYT ve AYT konu takibi", "Pomodoro odak sayacı", "Hata defteri", "Deneme net analizi", "Sınıf sıralaması", "Netle Beyin yapay zekâ koçu"],
+      "video": {
+        "@type": "VideoObject",
+        "name": "Netlen tanıtım videosu",
+        "description": "Netlen'in ana ekranı, odak sayacı, deneme analizi ve hata defteri 28 saniyede.",
+        "thumbnailUrl": "https://thelixi.github.io/media/tanitim-poster.png",
+        "contentUrl": "https://thelixi.github.io/media/netlen-tanitim.mp4",
+        "uploadDate": "2026-11-18",
+        "duration": "PT28S"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Netlen'i kullanmak için hesap açmam gerekir mi?", "acceptedAnswer": { "@type": "Answer", "text": "Hayır. Planın, konuların ve denemelerin varsayılan olarak yalnızca cihazında saklanır; hesap yalnızca bulut yedeği için gerekir. Uygulamada reklam ve izleme aracı yok." } },
+        { "@type": "Question", "name": "Çalışma planı nasıl oluşturuluyor?", "acceptedAnswer": { "@type": "Answer", "text": "İlk açılışta alanını, günlük çalışma saatini ve zorlandığın dersleri seçersin. Netlen haftayı 50 dakikalık oturumlara böler ve zorlandığın derslere daha çok zaman ayırır." } },
+        { "@type": "Question", "name": "Sınıf sıralamasında neler paylaşılıyor?", "acceptedAnswer": { "@type": "Answer", "text": "Takma adın ve sıralama sayıların: haftalık süre, soru sayısı, seri ve deneme netleri. Konuların ve hata defterin cihazında kalır." } },
+        { "@type": "Question", "name": "Netle Beyin nedir?", "acceptedAnswer": { "@type": "Answer", "text": "Netlen'in yapay zekâ çalışma koçu. Denemeni yorumlar, sorunu adım adım çözer, en zayıf konundan mini test hazırlar. Günlük mesaj sınırı vardır." } },
+        { "@type": "Question", "name": "Öğretmenler Netlen'i kullanabilir mi?", "acceptedAnswer": { "@type": "Answer", "text": "Evet. Öğretmen hesabıyla sınıf kuran öğretmen, öğrencilerin çalışma özetlerini ve ödev durumlarını görür. Öğretmenler sıralamada görünmez." } }
+      ]
+    },
+    { "@type": "Organization", "name": "Lixi Development", "logo": "https://thelixi.github.io/media/netlen-logo-512.png" },
+    { "@type": "WebSite", "name": "Netlen", "inLanguage": "tr", "url": "https://thelixi.github.io/" }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- type: software
+     deal: hero split, nav nav-mega, close close-word, footer footer-statement, rhythm dark-band, buttons solid,
+           mark: the client's own app icon (the dealt arc is replaced), palette cool-grey-cobalt (the first, mint-pink,
+           clashed with the client's blue-violet logo and film; cobalt is the nearest hue the house allows),
+           type urbanist (geist, the first, failed hero-lines: 4 lines at 44 characters), radius round, lit ground sand, effect grain-gradient in the one [data-visual] frame (#tanitim)
+     moments: word-highlight in #neden (iris-opens dealt as the second, left out: every place for it sat beside a beat) -->
+
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">İçeriğe geç</a>
+    <a class="nav__logo" href="#top"><img src="media/netlen-logo.png" alt="" width="28" height="28">Netlen</a>
+    <nav class="nav__links" aria-label="Ana menü">
+      <div class="nav__item"><a class="nav__link" href="#plan">Plan</a></div>
+      <div class="nav__item">
+        <a class="nav__link" href="#ozellikler">Özellikler <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3">
+              <p class="t-label">Çalış</p>
+              <a href="#plan">Haftalık plan<span>50 dakikalık oturumlar</span></a>
+              <a href="#ozellikler">Odak sayacı<span>25 dakika odak, sonra mola</span></a>
+              <a href="#ozellikler">Konu takibi<span>TYT ve AYT konu listesi</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">Takip et</p>
+              <a href="#analiz">Deneme analizi<span>Netlerin tek grafikte</span></a>
+              <a href="#ozellikler">Hata defteri<span>Yanlışlar yeniden sorulur</span></a>
+              <a href="#ozellikler">Sınıf sıralaması<span>Süre, soru, seri ve net</span></a>
+            </div>
+            <a class="menu-card span-3 start-10" href="#tanitim">
+              <div class="panel"><img class="frame__img" src="media/tanitim-poster.png" alt="Netlen'in ana ekranı, planı ve analiz ekranı üç telefonda" width="405" height="720" loading="lazy" style="object-position: 50% 20%"></div>
+              <span class="t-card">Tanıtım videosu</span>
+              <span class="t-small muted">Netlen 28 saniyede</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item"><a class="nav__link" href="#analiz">Analiz</a></div>
+      <div class="nav__item"><a class="nav__link" href="#tanitim">Video</a></div>
+      <div class="nav__item"><a class="nav__link" href="#sss">Sorular</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="app/">Netlen'i aç</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menü">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-5">
+        <p class="hero__kicker"><span class="dot" aria-hidden="true"></span>YKS 2027: tahmini 20 Haziran 2027</p>
+        <h1 id="hero-h">TYT ve AYT için çalışma planlayıcısı</h1>
+        <p class="hero__lead">Alanını, günlük saatini ve zorlandığın dersleri seç; Netlen 4 adımda haftalık planını kurar. Konuları, odak süreni ve deneme netlerini tek yerde takip edersin.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="app/">Netlen'i aç<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#tanitim">Videoyu izle</a></div>
+      </div>
+      <div class="hero__media lit span-6 start-7">
+        <div class="nl-phone">
+          <div class="ui nl-screen" role="img" aria-label="Netlen ana ekranı: YKS'ye kalan gün sayısı, günlük hedef, çalışma serisi ve bugünün planındaki dersler">
+            <div class="nl-top"><div><small>Günaydın,</small><b>Elif</b></div><span class="nl-gear"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1"/></svg></span></div>
+            <div class="nl-count">
+              <span class="nl-chip">YKS 2027 · 20 Haziran · tahmini</span>
+              <div class="nl-big"><b data-yks-days>214</b><span>gün kaldı<i data-yks-weeks>30 hafta 4 gün</i></span></div>
+              <div class="nl-bar"><i></i></div>
+              <div class="nl-meta"><span>Hazırlık yolculuğu</span><span>%25</span></div>
+              <div class="nl-minis"><span><b>10,8 sa</b>bu hafta</span><span><b>%29</b>plan</span><span><b>64</b>soru bugün</span></div>
+            </div>
+            <div class="nl-tiles">
+              <div class="nl-tile"><b>%28</b><span>günlük hedef · 1 sa 40 dk / 6 sa</span></div>
+              <div class="nl-tile"><b>16 gün</b><span>çalışma serisi</span></div>
+            </div>
+            <div class="nl-head">Bugünün planı <span>Haftayı gör</span></div>
+            <ul class="nl-rows">
+              <li class="nl-row is-done"><i></i><span><b>TYT Matematik</b><small>Yaş Problemleri</small></span><em>50 dk</em></li>
+              <li class="nl-row is-now"><i></i><span><b>AYT Fizik</b><small>Elektriksel Potansiyel ve İş</small></span><em>50 dk</em></li>
+              <li class="nl-row"><i></i><span><b>AYT Matematik</b><small>Diziler</small></span><em>50 dk</em></li>
+              <li class="nl-row"><i></i><span><b>AYT Geometri</b><small>Çemberde Açı ve Uzunluk</small></span><em>50 dk</em></li>
+              <li class="nl-row"><i></i><span><b>TYT Türkçe</b><small>Zamirler</small></span><em>50 dk</em></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- word-highlight: one statement of 12 to 40 words in its own section, one strong word in <strong> -->
+  <section class="section statement" id="neden" data-moment="word-highlight" aria-label="Netlen neden var">
+    <div class="wrap">
+      <p class="t-label">Neden Netlen</p>
+      <p class="mo-wh__text">Program bir defterde, netler ötekinde, süren aklında. Netlen haftalık planı, konu ilerlemeni, odak süreni ve deneme netlerini <strong>tek planda</strong> tutar.</p>
+    </div>
+  </section>
+
+  <section class="section" id="plan" aria-labelledby="plan-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 class="span-5" id="plan-h">Haftalık plan, zayıf derslerine göre</h2>
+        <div class="span-6 start-7 stack-4">
+          <p>Her gün 50 dakikalık oturumlara bölünür: konu çalışması, soru çözümü, tekrar. Bir denemen kötü geçerse plan zayıf derslerine göre yeniden kurulur.</p>
+          <a class="link" href="#sss">Planın nasıl kurulduğunu oku</a>
+        </div>
+      </div>
+      <div class="ui app fill" role="img" aria-label="Netlen haftalık plan ekranı: bu haftanın ders oturumları listesi ve 16–22 Kasım haftasının takvimi" data-ui-pause-host>
+        <div class="app__pane app__pane--list">
+          <div class="ui ui-panel ui-win" data-ui="window" data-open="Sırada" data-work="Çalışılıyor" data-done="Bitti">
+            <div class="ui-win__bar">
+              <span class="ui-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="ui-win__crumb"><img src="media/netlen-logo.png" alt="" width="16" height="16" loading="lazy" style="border-radius:4px">Plan <i>/</i> <b>Bu hafta</b></span>
+              <span class="ui-spacer"></span>
+              <span class="ui-win__search" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><span class="ui-win__ph">Ara</span><span class="ui-kbd">/</span></span>
+            </div>
+            <div class="ui-win__body">
+              <nav class="ui-win__side" aria-hidden="true">
+                <span class="ui-win__nav is-on"><svg class="ui-icon" viewBox="0 0 16 16"><rect x="2.5" y="3.5" width="11" height="10" rx="2"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3"/></svg>Hafta<em>45</em></span>
+                <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1.5"/></svg>Bugün<em>7</em></span>
+                <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.5-3.5M3 3v2.5h2.5"/></svg>Tekrar<em>4</em></span>
+                <span class="ui-win__nav"><svg class="ui-icon" viewBox="0 0 16 16"><path d="m3.5 8.4 2.8 2.8 6.2-6.4"/></svg>Bitti<em>13</em></span>
+                <span class="ui-win__label">Alan</span>
+                <span class="ui-win__nav"><span class="ui-win__hash">#</span>TYT</span>
+                <span class="ui-win__nav"><span class="ui-win__hash">#</span>AYT · SAY</span>
+              </nav>
+              <div class="ui-win__main">
+                <div class="ui-win__cols" aria-hidden="true"><span>Ders</span><span>Konu</span><span>Durum</span><span>Süre</span></div>
+                <ul class="ui-win__rows">
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="1">Ma</span><span class="ui-win__who">TYT Matematik</span><span class="ui-win__sub">Kesir Problemleri · Konu çalışması</span><span class="ui-win__st is-done" data-st>Bitti</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="3">Fi</span><span class="ui-win__who">AYT Fizik</span><span class="ui-win__sub">Elektriksel Kuvvet ve Alan · Konu çalışması</span><span class="ui-win__st is-done" data-st>Bitti</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="4">Ma</span><span class="ui-win__who">AYT Matematik</span><span class="ui-win__sub">Üstel Fonksiyon ve Logaritma · Soru çözümü</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="2">Ki</span><span class="ui-win__who">AYT Kimya</span><span class="ui-win__sub">Kimyasal Denge · Konu çalışması</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="5">Tü</span><span class="ui-win__who">TYT Türkçe</span><span class="ui-win__sub">Sıfatlar · Soru çözümü</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="3">Ge</span><span class="ui-win__who">AYT Geometri</span><span class="ui-win__sub">Çemberde Açı ve Uzunluk · Konu çalışması</span><span class="ui-win__st is-you" data-st>Tekrar</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="1">Bi</span><span class="ui-win__who">AYT Biyoloji</span><span class="ui-win__sub">Solunum Sistemi · Konu çalışması</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="4">Ge</span><span class="ui-win__who">TYT Geometri</span><span class="ui-win__sub">Çemberde Açı · Soru çözümü</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="2">Ta</span><span class="ui-win__who">TYT Tarih</span><span class="ui-win__sub">Tarih ve Zaman · Tekrar</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                  <li class="ui-win__row" data-row><span class="ui-avatar" data-tone="5">Co</span><span class="ui-win__who">TYT Coğrafya</span><span class="ui-win__sub">Atmosfer ve Sıcaklık · Konu çalışması</span><span class="ui-win__st" data-st>Sırada</span><span class="ui-win__age">50′</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app__pane app__pane--open" data-ui-loop>
+          <div class="ui ui-panel ui-calendar" data-ui="calendar" data-start="16" data-end="22" data-month="Kas">
+            <div class="ui-cal__head">
+              <div class="ui-cal__month">Kasım <span>2026</span></div>
+              <span class="ui-spacer"></span>
+              <span class="ui-chip ui-chip--plain ui-chip--ink" data-cal-range>16 – 22 Kas</span>
+              <span class="ui-cal__nav" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M10 4 6 8l4 4"/></svg></span>
+              <span class="ui-cal__nav" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 16 16"><path d="m6 4 4 4-4 4"/></svg></span>
+            </div>
+            <div class="ui-cal__dow" aria-hidden="true"><span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span></div>
+            <div class="ui-cal__days">
+              <span class="ui-cal__d is-out"><b>26</b></span><span class="ui-cal__d is-out"><b>27</b></span><span class="ui-cal__d is-out"><b>28</b></span><span class="ui-cal__d is-out"><b>29</b></span><span class="ui-cal__d is-out"><b>30</b></span><span class="ui-cal__d is-out"><b>31</b></span><span class="ui-cal__d" data-d="1"><b>1</b></span>
+              <span class="ui-cal__d" data-d="2"><b>2</b></span><span class="ui-cal__d" data-d="3"><b>3</b></span><span class="ui-cal__d" data-d="4"><b>4</b></span><span class="ui-cal__d" data-d="5"><b>5</b></span><span class="ui-cal__d" data-d="6"><b>6</b></span><span class="ui-cal__d" data-d="7"><b>7</b></span><span class="ui-cal__d" data-d="8"><b>8</b></span>
+              <span class="ui-cal__d" data-d="9"><b>9</b></span><span class="ui-cal__d" data-d="10"><b>10</b></span><span class="ui-cal__d" data-d="11"><b>11</b></span><span class="ui-cal__d" data-d="12"><b>12</b></span><span class="ui-cal__d" data-d="13"><b>13</b></span><span class="ui-cal__d" data-d="14"><b>14</b></span><span class="ui-cal__d" data-d="15"><b>15</b></span>
+              <span class="ui-cal__d is-start" data-d="16"><b>16</b></span><span class="ui-cal__d is-in" data-d="17"><b>17</b></span><span class="ui-cal__d is-in is-today" data-d="18"><b>18</b></span><span class="ui-cal__d is-in" data-d="19"><b>19</b></span><span class="ui-cal__d is-in" data-d="20"><b>20</b></span><span class="ui-cal__d is-in" data-d="21"><b>21</b></span><span class="ui-cal__d is-end is-mark" data-d="22"><b>22</b></span>
+              <span class="ui-cal__d" data-d="23"><b>23</b></span><span class="ui-cal__d" data-d="24"><b>24</b></span><span class="ui-cal__d" data-d="25"><b>25</b></span><span class="ui-cal__d" data-d="26"><b>26</b></span><span class="ui-cal__d" data-d="27"><b>27</b></span><span class="ui-cal__d" data-d="28"><b>28</b></span><span class="ui-cal__d" data-d="29"><b>29</b></span>
+              <span class="ui-cal__d" data-d="30"><b>30</b></span><span class="ui-cal__d is-out"><b>1</b></span><span class="ui-cal__d is-out"><b>2</b></span><span class="ui-cal__d is-out"><b>3</b></span><span class="ui-cal__d is-out"><b>4</b></span><span class="ui-cal__d is-out"><b>5</b></span><span class="ui-cal__d is-out"><b>6</b></span>
+            </div>
+            <div class="ui-cal__events">
+              <div class="ui-cal__ev" data-ev="16">
+                <span class="ui-cal__date"><b>16</b><i>Kas</i></span>
+                <span class="ui-cal__evtext"><span class="ui-cal__evtitle">Hafta başladı</span><span class="ui-cal__evsub">45 oturum, 39 sa 20 dk</span></span>
+              </div>
+              <div class="ui-cal__ev" data-ev="18">
+                <span class="ui-cal__date"><b>18</b><i>Kas</i></span>
+                <span class="ui-cal__evtext"><span class="ui-cal__evtitle">Bugün: 7 oturum</span><span class="ui-cal__evsub">5 sa 50 dk, 2 oturum bitti</span></span>
+              </div>
+              <div class="ui-cal__ev" data-ev="22">
+                <span class="ui-cal__date"><b>22</b><i>Kas</i></span>
+                <span class="ui-cal__evtext"><span class="ui-cal__evtitle">TYT denemesi</span><span class="ui-cal__evsub">Sonra plan netlerine göre güncellenir</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tanitim" style="--hm: 2" aria-labelledby="tanitim-h">
+    <div class="wrap">
+      <div class="grid fill">
+        <div class="span-5 split-col">
+          <h2 id="tanitim-h">Netlen'i 28 saniyede tanı</h2>
+          <p class="t-lead">Tanıtım videosunda ana ekran, odak sayacı, deneme analizi ve hata defteri sırayla geçer.</p>
+          <ul class="rows">
+            <li><span class="rows__name">Ana ekran</span><span class="rows__value">geri sayım ve günün hedefi</span></li>
+            <li><span class="rows__name">Odak sayacı</span><span class="rows__value">dersi seç, 25 dakika başlat</span></li>
+            <li><span class="rows__name">Hata defteri</span><span class="rows__value">yanlışlar aralıklarla döner</span></li>
+          </ul>
+          <a class="link split-col__end" href="#ozellikler">Özellikleri tek tek gör</a>
+        </div>
+        <div class="frame frame--fill span-6 start-7" data-visual>
+          <div class="frame__fx" data-fx="grain-gradient" data-fx-seed="7" data-fx-palette='{"bg":"#c6d3df","surface":"#d6e0e9","ink":"#25303a","accent":"#3f6a92"}'></div>
+          <!-- CLIENT FILE film: media/netlen-tanitim.mp4 (1080x1920, H.264, 28 s, the client's own story film) and media/tanitim-poster.png (its frame at 2.6 s) -->
+          <div class="hero__media nl-film">
+            <img src="media/tanitim-poster.png" alt="Netlen tanıtım videosunun açılışı: üç telefonda ana ekran, plan ve analiz, altında YKS'ye giden yolu planla, takip et, başar yazısı" width="405" height="720" loading="lazy" decoding="async">
+            <button class="ly-play" type="button" data-film="media/netlen-tanitim.mp4" aria-label="Tanıtım videosunu oynat"><span class="ly-play__disc"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 2.5v13l11-6.5z" fill="currentColor"/></svg></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section g2" id="ozellikler" aria-labelledby="ozellikler-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="ozellikler-h">Bir çalışma gününün araçları. <span class="muted">Odak sayacından sınıf sıralamasına.</span></h2>
+        </div>
+        <div class="grid">
+          <article class="card card--row card--open span-6 m-nolift">
+            <h3>25 dakikalık odak oturumu başlatır</h3>
+            <p>Dersi seç ve sayacı başlat. Biten oturum günün planına ve haftalık süreye kendiliğinden eklenir.</p>
+            <div class="panel">
+              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:360px;--ax:max(24px, 50% - 180px);--ay:40px;--ay-sm:16px">
+                <div class="ui ui-panel nl-timer" role="img" aria-label="Netlen odak sayacı: AYT Fizik için 25 dakikalık oturum, bugün 1 saat 40 dakika">
+                  <div class="nl-timer__tabs" aria-hidden="true"><span class="is-on">Odak</span><span>Kısa mola</span><span>Uzun mola</span></div>
+                  <div class="nl-ring"><svg viewBox="0 0 176 176" aria-hidden="true"><circle class="bg" cx="88" cy="88" r="82"/><circle class="fg" cx="88" cy="88" r="82"/></svg><div><b>18:45</b><small>AYT Fizik</small></div></div>
+                  <div class="nl-timer__foot"><span>Bugün <b>1 sa 40 dk</b></span><span>Pomodoro <b>2 oturum</b></span></div>
+                </div>
+              </div></div>
+            </div>
+          </article>
+          <article class="card card--row card--open span-6 m-nolift">
+            <h3>TYT ve AYT konularını işaretler</h3>
+            <p>TYT ve AYT konuları derslere ayrılmış gelir. Her konu başlanmadı, çalışılıyor, bitti ya da tekrar olarak durur.</p>
+            <div class="panel">
+              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:340px;--ax:max(24px, 50% - 170px);--ay:40px;--ay-sm:16px" data-ui-loop>
+                <div class="ui ui-panel ui-checks" data-ui="checklist">
+                  <div class="ui-checks__head">
+                    <div class="ui-title">TYT Türkçe</div>
+                    <span class="ui-spacer"></span>
+                    <div class="ui-meta" data-checks-count>2 / 5 bitti</div>
+                  </div>
+                  <div class="ui-checks__bar"><i data-checks-bar style="--k:0.4"></i></div>
+                  <ul class="ui-checks__list">
+                    <li class="ui-check is-done"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Sözcükte Anlam</span></li>
+                    <li class="ui-check is-done"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Paragrafta Ana Düşünce</span></li>
+                    <li class="ui-check"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Sıfatlar</span></li>
+                    <li class="ui-check"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Zamirler</span></li>
+                    <li class="ui-check"><span class="ui-check__box"><svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></span><span class="ui-check__label">Zarflar</span></li>
+                  </ul>
+                </div>
+              </div></div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-6 m-nolift">
+          <h3>Yanlış soruları yeniden sorar</h3>
+          <p>Hata defterine eklediğin soru ertesi gün, sonra aralıklarla yeniden karşına çıkar.</p>
+          <div class="panel">
+            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:380px;--ax:32px;--ay:calc(100% - 180px);--ay-sm:calc(100% - 180px)">
+              <div class="ui ui-notify" data-ui="notify">
+                <ul class="ui-notify__list" data-notify-list>
+                  <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M3 8a5 5 0 1 0 1.5-3.5M3 3v2.5h2.5"/></svg></span><span class="ui-note__text"><span class="ui-note__title">Bugün tekrar et<time>şimdi</time></span><span class="ui-note__body">4 hatalı soru tekrar bekliyor</span></span><span class="ui-btn ui-btn--sm ui-note__btn">Aç</span></li>
+                  <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-2.5-4 2.5z"/></svg></span><span class="ui-note__text"><span class="ui-note__title">Hata defterine eklendi<time>2 sa</time></span><span class="ui-note__body">Kesir Problemleri · yarın tekrar</span></span></li>
+                  <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="m3.5 8.4 2.8 2.8 6.2-6.4"/></svg></span><span class="ui-note__text"><span class="ui-note__title">Tekrar edildi<time>dün</time></span><span class="ui-note__body">Üçgende Alan · 3 gün sonra yine</span></span></li>
+                </ul>
+              </div>
+            </div></div>
+          </div>
+        </article>
+        <article class="card card--row card--open span-6 m-nolift">
+          <h3>Sınıfınla süreni karşılaştırır</h3>
+          <p>Altı karakterlik kodla sınıfa katıl. Sıralamada yalnızca takma adın ve sayıların görünür.</p>
+          <div class="panel">
+            <div class="stage stage--fade-b"><div class="at-right to-edge" style="--ax:32px;--ay:40px">
+              <div class="ui ui-panel ui-toggles" data-ui="toggles">
+                <div class="ui-head">
+                  <svg class="ui-icon ui-toggles__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 13 4v3.6c0 3-2.1 5.4-5 6.6-2.9-1.2-5-3.6-5-6.6V4z"/><path d="m5.8 8 1.6 1.6 3-3.2"/></svg>
+                  <div class="ui-title">Sınıfla paylaşılanlar</div>
+                  <span class="ui-spacer"></span>
+                  <div class="ui-meta" data-tg-count>4 / 5 açık</div>
+                </div>
+                <ul class="ui-toggles__list">
+                  <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Haftalık süre</span><span class="ui-tg__sub">Yalnızca odak sayacından</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Haftalık süre"><i></i></button></li>
+                  <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Soru sayısı</span><span class="ui-tg__sub">Bu hafta çözülenler</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Soru sayısı"><i></i></button></li>
+                  <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Seri</span><span class="ui-tg__sub">Aralıksız çalışılan günler</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Seri"><i></i></button></li>
+                  <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Deneme netleri</span><span class="ui-tg__sub">TYT ve AYT</span></span><button class="ui-switch is-on" type="button" role="switch" aria-checked="true" aria-label="Deneme netleri"><i></i></button></li>
+                  <li class="ui-tg"><span class="ui-tg__text"><span class="ui-tg__label">Hata defteri</span><span class="ui-tg__sub">Cihazında kalır</span></span><button class="ui-switch" type="button" role="switch" aria-checked="false" aria-label="Hata defteri"><i></i></button></li>
+                </ul>
+              </div>
+            </div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ground-inverse" id="analiz" aria-labelledby="analiz-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <div class="span-5 stack-4">
+          <h2 id="analiz-h">Deneme netlerin tek grafikte</h2>
+          <p class="t-lead">Her denemeden sonra netlerini gir. Netlen TYT ve AYT netlerini ayrı grafikte gösterir, hedefine kaç net kaldığını yazar.</p>
+          <ul class="rows">
+            <li><span class="rows__name">Bölüm bölüm</span><span class="rows__value">Türkçe, sosyal, matematik, fen</span></li>
+            <li><span class="rows__name">Hedef</span><span class="rows__value">üniversite, bölüm ve netler</span></li>
+            <li><span class="rows__name">Netle Beyin</span><span class="rows__value">zayıf konuları bulur</span></li>
+          </ul>
+          <a class="link" href="#sss">Netle Beyin hakkında oku</a>
+        </div>
+        <div class="frame frame--split frame--lit span-6 start-7">
+          <div class="stage">
+            <div class="at-corner" style="--ax:40px;--ay:48px">
+              <div class="ui ui-panel ui-stat" data-ui="stat" data-from="82,25" data-to="89,75" data-values="64,70.5,76.5,82.25,89.75" data-prev="58,61,64,70.5,76.5">
+                <div class="ui-stat__head">
+                  <div class="ui-stat__top">
+                    <span class="ui-stat__label">TYT toplam net</span>
+                    <span class="ui-stat__range">Son 5 deneme<svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 6.5 3.5 3.5 3.5-3.5"/></svg></span>
+                  </div>
+                  <div class="ui-stat__line">
+                    <span class="ui-stat__num" data-stat-num>89,75</span>
+                    <span class="ui-chip ui-chip--plain ui-stat__delta"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 9.5v-7M3 5.5l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>7,5 net</span>
+                    <span class="ui-stat__sub">hedefe 10,25 net</span>
+                  </div>
+                </div>
+                <div class="ui-stat__chart">
+                  <svg class="ui-stat__svg" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="ui-stat__grid" d="M0 30.5H400M0 60.5H400M0 90.5H400"/>
+                    <path class="ui-stat__cover" fill-rule="evenodd" d=""/>
+                    <g class="ui-stat__bars"><rect rx="3" x="0" y="56" width="64" height="64"/><rect rx="3" x="84" y="49.5" width="64" height="70.5"/><rect rx="3" x="168" y="43.5" width="64" height="76.5"/><rect rx="3" x="252" y="37.75" width="64" height="82.25"/><rect rx="3" x="336" y="30.25" width="64" height="89.75"/></g>
+                  </svg>
+                  <div class="ui-stat__axis" aria-hidden="true"><span>21 Eyl</span><span>19 Eki</span><span>16 Kas</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sss" aria-labelledby="sss-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <div class="span-5 stack-4">
+          <h2 id="sss-h">Sık sorulan sorular</h2>
+          <p class="muted">Verilerin nerede durur, plan nasıl kurulur, sınıfta ne görünür.</p>
+          <a class="link" href="gizlilik.html">Gizlilik politikasını oku</a>
+        </div>
+        <div class="faq span-6 start-7">
+          <div class="faq__item"><h3>Netlen'i kullanmak için hesap açmam gerekir mi?</h3><p>Hayır. Planın, konuların ve denemelerin varsayılan olarak yalnızca cihazında saklanır; hesap yalnızca bulut yedeği için gerekir. Uygulamada reklam ve izleme aracı yok.</p></div>
+          <div class="faq__item"><h3>Çalışma planı nasıl oluşturuluyor?</h3><p>İlk açılışta alanını, günlük çalışma saatini ve zorlandığın dersleri seçersin. Netlen haftayı 50 dakikalık oturumlara böler ve zorlandığın derslere daha çok zaman ayırır.</p></div>
+          <div class="faq__item"><h3>Sınıf sıralamasında neler paylaşılıyor?</h3><p>Takma adın ve sıralama sayıların: haftalık süre, soru sayısı, seri ve deneme netleri. Konuların ve hata defterin cihazında kalır.</p></div>
+          <div class="faq__item"><h3>Netle Beyin nedir?</h3><p>Netlen'in yapay zekâ çalışma koçu. Denemeni yorumlar, sorunu adım adım çözer, en zayıf konundan mini test hazırlar. Günlük mesaj sınırı vardır.</p></div>
+          <div class="faq__item"><h3>Öğretmenler Netlen'i kullanabilir mi?</h3><p>Evet. Öğretmen hesabıyla sınıf kuran öğretmen, öğrencilerin çalışma özetlerini ve ödev durumlarını görür. Öğretmenler sıralamada görünmez.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--statement" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--word">
+      <div class="section-head--split">
+        <div><h2 id="close-h">Bugünün planını Netlen'de kur</h2><p class="t-lead">Kayıt gerekmez; hesap yalnızca bulut yedeği için.</p></div>
+        <a class="btn btn--primary" href="app/">Netlen'i aç<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      </div>
+      <p class="close__word" aria-hidden="true">Netlen</p>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo footer-logo" href="#top"><img src="media/netlen-logo.png" alt="" width="28" height="28" loading="lazy">Netlen</a>
+          <p class="footer__lede">TYT ve AYT için çalışma planlayıcısı.</p>
+        </div>
+        <div class="span-2 footer__col"><h3>Uygulama</h3><ul><li><a href="#plan">Plan</a></li><li><a href="#ozellikler">Özellikler</a></li><li><a href="#analiz">Analiz</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Tanıtım</h3><ul><li><a href="#tanitim">Video</a></li><li><a href="#neden">Neden Netlen</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Destek</h3><ul><li><a href="#sss">Sorular</a></li><li><a href="gizlilik.html">Gizlilik</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>İletişim</h3><ul><li><a href="mailto:lixi@lixideveloper.dev">E-posta gönder</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Lixi Development</span>
+        <a href="gizlilik.html">Gizlilik politikası</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* the days to YKS 2027 (estimated 20 June 2027, Istanbul) in the hero's phone, so the count is never stale */
+(function () {
+  var exam = Date.UTC(2027, 5, 19, 21, 0, 0), now = Date.now();
+  var d = Math.max(0, Math.ceil((exam - now) / 864e5));
+  var n = document.querySelector('[data-yks-days]'), w = document.querySelector('[data-yks-weeks]');
+  if (n) n.textContent = d;
+  if (w) w.textContent = Math.floor(d / 7) + ' hafta ' + (d % 7) + ' gün';
+})();
+</script>
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+</body>
+</html>
